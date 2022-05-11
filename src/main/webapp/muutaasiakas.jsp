@@ -45,10 +45,8 @@
 $(document).ready(function(){
 	$("#takaisin").click(function(){
 		document.location="listaaasiakkaat.jsp";
-	});
-	
-	//Haetaan muutettavan asiakkaan tiedot. Kutsutaan backin GET-metodia ja välitetään kutsun mukana muutettavan tiedon id
-	//GET /autot/haeyksi/rekno
+	});	
+
 	var asiakas_id = requestURLParam("asiakas_id"); //Funktio löytyy scripts/main.js 	
 	$.ajax({url:"asiakkaat/haeyksi/"+asiakas_id, type:"GET", dataType:"json", success:function(result){
 		$("#asiakas_id").val(result.asiakas_id);
@@ -107,8 +105,6 @@ $(document).ready(function(){
 	}); 	
 });
 
-//funktio tietojen päivittämistä varten. Kutsutaan backin PUT-metodia ja välitetään kutsun mukana uudet tiedot json-stringinä.
-//PUT /autot/
 function paivitaTiedot(){	
 	var formJsonStr = formDataJsonStr($("#tiedot").serializeArray()); //muutetaan lomakkeen tiedot json-stringiksi
 	$.ajax({url:"asiakkaat", data:formJsonStr, type:"PUT", dataType:"json", success:function(result) { //result on joko {"response:1"} tai {"response:0"}       
@@ -116,9 +112,7 @@ function paivitaTiedot(){
     	$("#ilmo").html("Asiakkaan päivittäminen epäonnistui.");
     } else if(result.response==1){			
     	$("#ilmo").html("Asiakkaan päivittäminen onnistui.");
-    //"#asiakas_id", 
     	$("#asiakas_id", "#etunimi", "#sukunimi", "#puhelin", "#sposti").val("");
-    	console.log(asiakas_id)
 	  }
 }});	
 }

@@ -137,6 +137,7 @@ public class Dao {
         		if(rs.isBeforeFirst()){ //jos kysely tuotti dataa, eli id on käytössä
         			rs.next();
         			asiakas = new Asiakas(); //voi kokeilla lisätä myös idn rimpsuun        			
+        			//asiakas = new Asiakas(rs.getInt("asiakas_id"), ...)
         			asiakas.setAsiakas_id(rs.getInt(1));
         			asiakas.setEtunimi(rs.getString(2));
         			asiakas.setSukunimi(rs.getString(3));
@@ -158,15 +159,12 @@ public class Dao {
 		try {
 			con = yhdista();
 			stmtPrep=con.prepareStatement(sql);
-			//stmtPrep.setInt(1, asiakas_id);
 			stmtPrep.setString(1, asiakas.getEtunimi());
 			stmtPrep.setString(2, asiakas.getSukunimi());
 			stmtPrep.setString(3, asiakas.getPuhelin()); 
 			stmtPrep.setString(4, asiakas.getSposti());
-			System.out.println(asiakas);
-			stmtPrep.setInt(5, asiakas_id);
+			stmtPrep.setInt(5, asiakas.getAsiakas_id());
 			stmtPrep.executeUpdate();
-			System.out.println("ok");
 	        con.close();
 		} catch (Exception e) {				
 			e.printStackTrace();
