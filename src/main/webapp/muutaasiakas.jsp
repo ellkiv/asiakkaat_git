@@ -2,13 +2,14 @@
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
+<div></div>
 <head>
 <meta charset="ISO-8859-1">
 <script src="scripts/main.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.15.0/jquery.validate.min.js"></script>
 <link rel="stylesheet" type="text/css" href="css/main.css">
-<title>Lisää asiakas</title>
+<title>Päivitä asiakas</title>
 <style>.oikealle</style>
 </head>
 <body>
@@ -32,10 +33,11 @@
 				<td><input type="text" name="sukunimi" id="sukunimi"></td>
 				<td><input type="text" name="puhelin" id="puhelin"></td>
 				<td><input type="text" name="sposti" id="sposti"></td> 
-				<td><input type="submit" id="tallenna" value="Lisää"></td>
+				<td><input type="submit" id="tallenna" value="Päivitä"></td>
 			</tr>
 		</tbody>
 	</table>
+	<input type=hidden name="asiakas_id" id=asiakas_id>
 </form>
 <span id="ilmo"></span>
 </body>
@@ -44,6 +46,18 @@ $(document).ready(function(){
 	$("#takaisin").click(function(){
 		document.location="listaaasiakkaat.jsp";
 	});
+	
+	//Haetaan muutettavan asiakkaan tiedot. Kutsutaan backin GET-metodia ja välitetään kutsun mukana muutettavan tiedon id
+	//GET /autot/haeyksi/rekno
+	var asiakas_id = requestURLParam("asiakas_id"); //Funktio löytyy scripts/main.js 	
+	$.ajax({url:"asiakkaat/haeyksi/"+asiakas_id, type:"GET", dataType:"json", success:function(result){
+		$("#asiakas_id").val(result.asiakas_id);
+		$("#etunimi").val(result.etunimi);	
+		$("#sukunimi").val(result.sukunimi);
+		$("#puhelin").val(result.puhelin);
+		$("#sposti").val(result.sposti);
+    }});
+	
 	$("#tiedot").validate({						
 		rules: {
 			etunimi:  {
@@ -58,7 +72,6 @@ $(document).ready(function(){
 			},
 			puhelin:  {
 				required: true,
-				minlength: 5,
 				maxlength: 20
 			},	
 			sposti:  {
@@ -80,7 +93,6 @@ $(document).ready(function(){
 			},
 			puhelin: {
 				required: "Puuttuu",
-				minlength: "Liian lyhyt",
 				maxlength: "Liian pitkä"
 			},
 			sposti: {
@@ -90,23 +102,25 @@ $(document).ready(function(){
 			}
 		},			
 		submitHandler: function(form) {	
-			lisaaTiedot();
+			paivitaTiedot();
 		}		
 	}); 	
 });
-//funktio tietojen lisäämistä varten. Kutsutaan backin POST-metodia ja välitetään kutsun mukana uudet tiedot json-stringinä.
-//POST /autot/
-function lisaaTiedot(){	
+
+//funktio tietojen päivittämistä varten. Kutsutaan backin PUT-metodia ja välitetään kutsun mukana uudet tiedot json-stringinä.
+//PUT /autot/
+function paivitaTiedot(){	
 	var formJsonStr = formDataJsonStr($("#tiedot").serializeArray()); //muutetaan lomakkeen tiedot json-stringiksi
-	$.ajax({url:"asiakkaat", data:formJsonStr, type:"POST", dataType:"json", success:function(result) { //result on joko {"response:1"} tai {"response:0"}       
+	$.ajax({url:"asiakkaat", data:formJsonStr, type:"PUT", dataType:"json", success:function(result) { //result on joko {"response:1"} tai {"response:0"}       
 		if(result.response==0){
-      	$("#ilmo").html("Asiakkaan lisääminen epäonnistui.");
-      }else if(result.response==1){			
-      	$("#ilmo").html("Asiakkaan lisääminen onnistui.");
-      	$("#etunimi", "#sukunimi", "#puhelin", "#sposti").val("");
-		}
-  }});
-	
+    	$("#ilmo").html("Asiakkaan päivittäminen epäonnistui.");
+    } else if(result.response==1){			
+    	$("#ilmo").html("Asiakkaan päivittäminen onnistui.");
+    //"#asiakas_id", 
+    	$("#asiakas_id", "#etunimi", "#sukunimi", "#puhelin", "#sposti").val("");
+    	console.log(asiakas_id)
+	  }
+}});	
 }
 </script>
 </html>

@@ -5,7 +5,7 @@ table {
   width: 50%;
 }
 html {
-background-color: #fffafc;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
 
 table td, table th {
@@ -35,8 +35,18 @@ table th {
 	text-align: right;	
 	
 }
-#uusiAsiakas, #takaisin{
-	color: black;	
+
+.muuta{
+	color: blue;
+	text-decoration: underline;
 	cursor: pointer;	
+}
+
+#uusiAsiakas, #takaisin, #muutaAsiakas{
+	color: black;	
+	cursor: pointer;
+	background-color: #D3D3D3;
+	padding: 3px;
+	line-height: 40px;	
 }
 
